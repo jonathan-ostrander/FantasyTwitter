@@ -35,3 +35,14 @@ $('body').scrollspy({
 $('.navbar-collapse ul li a').click(function() {
     $('.navbar-toggle:visible').click();
 });
+
+$("form > button").click(function(e) {
+  e.preventDefault();
+  var classes = $(this).attr('class').split(" ");
+  var id = classes[classes.length - 1];
+  var route = '/' + id;
+  var username = $("form#" + id + " input#name").val();
+  var password = $("form#" + id + " input#password").val();
+
+  window.location.href = route + "?username=" + username + "&password=" + password;
+});

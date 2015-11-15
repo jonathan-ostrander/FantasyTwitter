@@ -11,14 +11,16 @@
 
     <title>Fantweezy Database</title>
 
-    <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/fantasy.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/fantasy.css') }}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -71,86 +73,43 @@
             <div class="container-fluid">
 
                 <!-- /.row -->
-
+                {% if handles %}
                     <div class="col-lg-10">
                     <div class="card">
                           <div class="card-block">
-                        <h2 class="card-title">Current Leaders</h2>
+                        <h2 class="card-title">Choose your Players</h2>
                         <div class="table-responsive">
+                          <div class="checkbox">
                             <table class="table table-bordered table-hover" data-card-view="true">
                                 <thead>
                                     <tr>
                                         <th>Player</th>
                                         <th>Cost</th>
-                                        <th>Ranking</th>
+                                        <th>Purchase</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>/index.html</td>
-                                        <td>1265</td>
-                                        <td>32.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/about.html</td>
-                                        <td>261</td>
-                                        <td>33.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/sales.html</td>
-                                        <td>665</td>
-                                        <td>21.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/blog.html</td>
-                                        <td>9516</td>
-                                        <td>89.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/404.html</td>
-                                        <td>23</td>
-                                        <td>34.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/services.html</td>
-                                        <td>421</td>
-                                        <td>60.3%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>/blog/post.html</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>8</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>9</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>10</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        
-                                    </tr>
+                                  {% for handle in handles %}
+                                  <tr>
+                                    <td>{{ handle.name }}</td>
+                                    <td>{{ handle.cost }}</td>
+                                    <td><label><input type="checkbox" value="{{handle.name}}">Add</label></td>
+                                  </tr>
+                                  {% endfor %}
                                 </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><button type="submit" class="btn btn-success btn-lg login">Submit</button></td>
+                                  </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
                   </div>
+                </div>
+              </div>
   <!-- card
     <div class="card">
     <div class="card-block">
@@ -168,23 +127,63 @@
     </div>
   </div> -->
             <!-- /.container-fluid -->
-            
+
+            <!-- History Team -->
+            {% else %}
+              <div class="col-lg-10">
+                  <div class="card">
+                  <div class="card-block">
+                  <h2 class="card-title">Your Team</h2>
+                  <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Cost</th>
+                      <th>Retweets</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% for handle in team.handles %}
+                      <tr>
+                        <td>{{ handle.name }}</td>
+                        <td>{{ handle.cost }}</td>
+                        <td>{{ handle.get_latest() }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td><button type="submit" class="btn btn-danger btn-lg" id="delete">Delete</button></td>
+                      </tr>
+                    </tfoot>
+                </table>
+                </div>
+            </div>
+            <br>
+          </div>
 
         </div>
-        </div>
-        </div>
-        
-        
+        {% endif %}
         <!-- /#page-wrapper -->
-
+    </div>
+    </div>
     </div>
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
+    <!-- Plugin JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.min.js"></script>
+
+    <script src="{{ url_for('static', filename='js/cbpAnimatedHeader.js') }}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{{ url_for('static', filename='js/team.js') }}"></script>
 
 </body>
 
