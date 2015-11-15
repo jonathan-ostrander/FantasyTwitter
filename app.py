@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 
-import tweet_get import * 
+from tweet_get import *
 import datetime as DT
 from time import sleep
 from multiprocessing import Pool
@@ -86,7 +86,7 @@ def home():
 if __name__ == "__main__":
 	_pool = Pool(processes=1)
 	try:
-		p = multiprocessing.Process(target=write_to_db, args=())
+		p = multiprocessing.Process(target=write_to_db, args=(60*15))
 		p.start()
 		app.run(debug=True)
 	except KeyboardInterrupt:
