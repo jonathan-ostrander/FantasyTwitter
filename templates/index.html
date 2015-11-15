@@ -15,10 +15,10 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Custom CSS -->
-<link href="css/fantasy.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/fantasy.css') }}" rel="stylesheet">
 
 <!-- Custom Fonts -->
-<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -54,7 +54,7 @@
 <a href="#page-top"></a>
 </li>
 <li class="page-scroll">
-<a href="../Fantweezy/index.html">Home</a>
+<a href="/">Home</a>
 </li>
 <li class="page-scroll">
 <a href="#login">Login</a>
@@ -71,11 +71,11 @@
 <div class="container">
 <div class="row">
 <div class="col-lg-12">
-<img class="img-responsive" src="img/profile.png" alt="">
+<img class="img-responsive" src="{{ url_for('static', filename='img/profile.svg') }}" alt="">
 <div class="intro-text">
 <span class="name">Fantweezy</span>
 <hr class="star-light">
-<span class="skills">Fantweezy Information</span>
+<span class="skills">Create your Fantweezy team and compete to find the most retweeted celebrities.</span>
 </div>
 </div>
 </div>
@@ -96,53 +96,51 @@
 <div class="row">
 <div class="col-md-6" style="border-left:1px solid #ccc;height:160px">
 <h3 class="panel-title">Sign up</h3>
-<form name="sentMessage" id="contactForm" novalidate>
+<form id="signup">
 <div class="row control-group">
 <div class="form-group col-xs-12 floating-label-form-group controls">
-<label>Username</label>
+<label>username</label>
 <input type="text" class="form-control" placeholder="Username" id="name" required data-validation-required-message="Please enter your Username.">
 <p class="help-block text-danger"></p>
 </div>
 </div>
 <div class="row control-group">
 <div class="form-group col-xs-12 floating-label-form-group controls">
-<label>Password</label>
+<label>password</label>
 <input type="password" class="form-control" placeholder="Password" id="password" required data-validation-required-message="Please enter your Password.">
 <p class="help-block text-danger"></p>
 </div>
 </div>
+<br>
+<button type="submit" class="btn btn-success btn-lg signup">Submit</button>
 </form>
 </div>
 <div class="col-md-6" style="border-left:1px solid #ccc;height:160px">
 
 
 <h3 class="panel-title">Login</h3>
+<form id="login">
 <div class="row control-group">
 <div class="form-group col-xs-12 floating-label-form-group controls">
-<label>Username</label>
-<input type="text" class="form-control" placeholder="Username" id="name" required data-validation-required-message="Please enter your Username.">
+<label>username</label>
+<input type="text" class="form-control" placeholder="Username" id="name" required>
 <p class="help-block text-danger"></p>
 </div>
 </div>
 <div class="row control-group">
 <div class="form-group col-xs-12 floating-label-form-group controls">
-<label>Password</label>
-<input type="password" class="form-control" placeholder="Password" id="password" required data-validation-required-message="Please enter your Password.">
+<label>password</label>
+<input type="password" class="form-control" placeholder="Password" id="password" required>
 <p class="help-block text-danger"></p>
-</div>
-</div>
 </div>
 </div>
 <br>
-<div id="success"></div>
-<div class="row">
-<div class="form-group col-xs-12">
-<button type="submit" class="btn btn-success btn-lg">Submit</button>
+<button type="submit" class="btn btn-success btn-lg login">Submit</button>
+</form>
+</div>
+</div>
 </div>
 
-</div>
-
-</div>
 </div>
 </section>
 <!-- Footer -->
@@ -192,254 +190,17 @@ Copyright &copy; Your Website 2015
 </div>
 </footer>
 
-<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-<div class="scroll-top page-scroll visible-xs visible-sm">
-<a class="btn btn-primary" href="#page-top">
-<i class="fa fa-chevron-up"></i>
-</a>
-</div>
-
-<!-- Portfolio Modals -->
-<div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/cabin.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/cake.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/circus.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/game.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/safe.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-content">
-<div class="close-modal" data-dismiss="modal">
-<div class="lr">
-<div class="rl">
-</div>
-</div>
-</div>
-<div class="container">
-<div class="row">
-<div class="col-lg-8 col-lg-offset-2">
-<div class="modal-body">
-<h2>Project Title</h2>
-<hr class="star-primary">
-<img src="img/portfolio/submarine.png" class="img-responsive img-centered" alt="">
-<p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-<ul class="list-inline item-details">
-<li>Client:
-  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-  </strong>
-</li>
-<li>Date:
-  <strong><a href="http://startbootstrap.com">April 2014</a>
-  </strong>
-</li>
-<li>Service:
-  <strong><a href="http://startbootstrap.com">Web Development</a>
-  </strong>
-</li>
-</ul>
-<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
 <!-- jQuery -->
-<script src="js/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 
 <!-- Plugin JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="js/classie.js"></script>
-<script src="js/cbpAnimatedHeader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.min.js"></script>
 
-<!-- Contact Form JavaScript -->
-<script src="js/jqBootstrapValidation.js"></script>
-<script src="js/contact_me.js"></script>
+<script src="{{ url_for('static', filename='js/cbpAnimatedHeader.js') }}"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="js/freelancer.js"></script>
+<script src="{{ url_for('static', filename='js/fantasy.js') }}"></script>
 
 </body>
 

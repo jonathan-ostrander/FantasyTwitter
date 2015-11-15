@@ -1,10 +1,10 @@
-from flask import Flask, render_template, redirect, request, url_for, jsonify, g
+from flask import Flask, render_template, redirect, request, url_for, jsonify, g, session
 from flask.ext.sqlalchemy import SQLAlchemy
 
 import datetime as DT
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
@@ -21,7 +21,7 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.username)
-       
+
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     handles = db.relationship('Handle', secondary=handles, backref=db.backref('teams', lazy='dynamic'))
@@ -30,10 +30,10 @@ class Team(db.Model):
 
     def __repr__(self):
         return '<Team %r>' % (self.user)
-        
+
     def get_points(self):
         return sum([handle.get_latest() for handle in self.handles])
-        
+
 class Handle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140))
@@ -42,9 +42,9 @@ class Handle(db.Model):
 
     def __repr__(self):
         return '<Handle %r>' % (self.name)
-        
+
     def get_latest(self):
-        return sorted(self.datapoints, key=lambda x: x.timestamp)[-1]
+        return sorted(self.datapoints, key=lambda x: x.timestamp)[-1].retweets
 
 class HandleData(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -53,86 +53,104 @@ class HandleData(db.Model):
     timestamp = db.Column(db.DateTime)
 
     def __repr__(self):
-        return '<HandleData %r>' % (self.dataPt) 
+        return '<HandleData %r>' % (self.handle)
 
-@app.route('/login',methods=["POST"])
+@app.before_request
+def load_access_token():
+
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = None
+
+    g.user = User.query.filter_by(username = username).first()
+
+@app.route('/login')
 def login():
+    print request.args.get("username")
     user = User.query.filter_by(username = request.args.get("username")).first()
+    print user
     if user is None or request.args.get("password") != user.password:
         return redirect(url_for("home"))
     else:
-        g.user = user
-        return redirect(url_for("front_panel"))
-        
-@app.route('/signup',methods=["POST"])
+        session['username'] = user.username
+        return redirect(url_for("leaderboard"))
+
+@app.route('/signup')
 def signup():
     user = User.query.filter_by(username = request.args.get("username")).first()
     if user is None:
         user = User(username = request.args.get("username"), password = request.args.get("password"))
         db.session.add(user)
         db.session.commit()
-        g.user = user
-        return redirect(url_for("front_panel"))
+        session['username'] = user.username
+        return redirect(url_for("leaderboard"))
     else:
         return redirect(url_for("home"))
 
 @app.route('/leaderboard')
 def leaderboard():
-    users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
-    render_template('leaderboard.html', users=users)
-    
+    users = sorted([user for user in User.query.all() if len(user.teams.all()) > 0], key=lambda user: user.teams[0].get_points())
+    costs = [sum([handle.cost for handle in user.teams[0].handles]) for user in users]
+    users = [(users[i], costs[i]) for i in range(len(users))]
+    return render_template('leaderboard.html', users=users)
+
 @app.route('/team')
 def team():
     if g.user is None:
-        redirect(url_for('home'))
-    
-    if len(g.user.teams) == 0:
+        return redirect(url_for('home'))
+
+    if len(g.user.teams.all()) == 0:
         handles = Handle.query.all()
         team = None
     else:
         team = g.user.teams[0]
         handles = None
-        
-    render_template('team.html', handles = handles, team = team)
 
-@app.route('/createteam', methods=["POST"])
+    return render_template('team.html', handles = handles, team = team)
+
+@app.route('/createteam')
 def create_team():
 
-    if g.user.teams > 0:
-        redirect(url_for('team'))
-    
+    if len(g.user.teams.all()) > 0:
+        return redirect(url_for('team'))
+
     handles=[]
-    for checkbox in request.form.getlist('check'):
-        handles.append(Handle.query.filter_by(name = checkbox.value).first())
-    
+    for checkbox in request.args.get('check').split("|"):
+        handles.append(Handle.query.filter_by(name = checkbox).first())
+    print handles
+    print sum([handle.cost for handle in handles])
     if sum([handle.cost for handle in handles]) <= 100:
         team = Team(user = g.user.id, handles = handles)
 
         db.session.add(team)
         db.session.commit()
-    
-        render_template('team.html', handles = handles, team = team)
-    
-    else:
-        redirect(url_for('team'))
 
-@app.route('deleteteam')
+        return redirect(url_for('team'))
+
+    else:
+        return redirect(url_for('team'))
+
+@app.route('/deleteteam')
 def delete_team():
-    if g.user and len(g.user.teams) == 1:
+    if g.user and len(g.user.teams.all()) == 1:
         db.session.delete(g.user.teams[0])
         db.session.commit()
-    
-    redirect(url_for('team'))
-        
+
+    return redirect(url_for('team'))
+
 @app.route('/RTData')
 def RTData():
     users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
-    render_template('leaderboard.html', users=users)
-    
+    return render_template('leaderboard.html', users=users)
+
 
 @app.route('/')
 def home():
-	return render_template('index.html')
+    if g.user is None:
+        return render_template('index.html')
+    else:
+        return redirect(url_for('leaderboard'))
 
 if __name__ == "__main__":
 	app.run(debug=True)
