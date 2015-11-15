@@ -44,7 +44,7 @@ class Handle(db.Model):
         return '<Handle %r>' % (self.name)
         
     def get_latest(self):
-        return sorted(self.datapoints, key=lambda x: x.timestamp)[-1].retweets
+        return sorted(self.datapoints, key=lambda x: x.timestamp)[-1]
 
 class HandleData(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -76,6 +76,11 @@ def signup():
     else:
         return redirect(url_for("home"))
 
+@app.route('/leaderboard')
+def leaderboard():
+    users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
+    render_template('leaderboard.html', users=users)
+    
 
 @app.route('/')
 def home():
