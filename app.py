@@ -52,6 +52,7 @@ class HandleData(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     handle = db.Column(db.Integer, db.ForeignKey('handle.id'))
     retweets = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime)
 
     def __repr__(self):
         return '<HandleData %r>' % (self.dataPt) 
@@ -76,47 +77,6 @@ def signup():
         return redirect(url_for("front_panel"))
     else:
         return redirect(url_for("home"))
-        
-        
-#update database and stuff
-def get_retweet_info(time, name, past, delta):
-	'''
-	arguments : int(seconds), String name
-	returns boolean
-
-	function will be called periodically by thread
-	and will update the database from 
-	'''
-	past_date = DT.datetime.today() - DT.timedelta(days=1)
-	return None
-
-def write_to_db():
-	handles = Handle.query.all()
-
-	total_retweets = 0
-	r = []
-	for handle in handles:
-		retweets = getReweets(handle.name)#get the retweets
-		r.append(retweets)#add to a list for further analysis
-
-		handledata = HandleData(retweets=retweets, handle=handle)#add to database
-		db.session.add(handledata)
-		db.session.commit()
-		total_retweets += r[-1]#get the most recently added tweet
-
-	average_retweets = total_retweets / float(len(handles))
-
-	i = 0
-	while i<len(handles):
-		cost = (r[i]/average_retweets) * 100) / 5
-		person = Handle.query.filter_by(name=handles[i])
-		person.update().values(cost=cost)
-		db.session.commit()
-		i+=1
-
-	return True
-	
-
 
 
 @app.route('/')
