@@ -115,7 +115,15 @@ def create_team():
     
     else:
         redirect(url_for('team'))
+
+@app.route('deleteteam')
+def delete_team():
+    if g.user and len(g.user.teams) == 1:
+        db.session.delete(g.user.teams[0])
+        db.session.commit()
     
+    redirect(url_for('team'))
+        
 @app.route('/RTData')
 def RTData():
     users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
