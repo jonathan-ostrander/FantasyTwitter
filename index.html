@@ -4,7 +4,10 @@
 </head>
 <body>
   <div class="overlay">
-    <h1>FANTWEEZY</h1>
+    <div>
+      <h1>FANTWEEZY</h1>
+      <h2>the experience</h2>
+    </div>
   </div>
   <audio src="./immaletyoufinish.mp3" autoplay loop></audio>
   <style>
@@ -24,15 +27,21 @@
       background-color: rgba(0, 0, 0, 0.7);
     }
 
-    h1 {
+    .overlay > div {
       width: 100%;
       color: white;
-      font-size: 200px;
       font-family: "Raleway";
       text-align: center;
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
+    }
+
+    h1 {
+      font-size: 200px;
+    }
+    h2 {
+      font-size: 50px;
     }
   </style>
 </body>
