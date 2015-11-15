@@ -18,3 +18,7 @@ if __name__ == "__main__":
         handles = json.load(f)
         for handle in handles:
             print add_handle(handle)
+            
+    with file('users.txt', 'r') as f:
+        for line in f:
+            print add_user(*line.strip().split(" "))

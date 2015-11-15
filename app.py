@@ -1,20 +1,12 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 
-from tweet_get import *
 import datetime as DT
-from time import sleep
-from multiprocessing import Pool
-import multiprocessing
 import json
 
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
-short_time_read = True
-_pool = None
-
 
 handles = db.Table('handles',
     db.Column('team_id', db.Integer, db.ForeignKey('team.id')),
@@ -84,11 +76,4 @@ def home():
 	return render_template('index.html')
 
 if __name__ == "__main__":
-	_pool = Pool(processes=1)
-	try:
-		p = multiprocessing.Process(target=write_to_db, args=(60*15))
-		p.start()
-		app.run(debug=True)
-	except KeyboardInterrupt:
-		_pool.close()
-		_pool.join()
+	app.run(debug=True)

@@ -23,36 +23,35 @@ def getRetweets(name):
    	#loop through each tweet and add to sum
     return retweet_sum
 
-def write_to_db(time):
+def write_to_db():
     while True:
         handles = Handle.query.all()
 
         total_retweets = 0
         r = []
         for handle in handles:
-            retweets = getReweets(handle.name)#get the retweets
+            retweets = getRetweets(handle.name)#get the retweets
             r.append(retweets)#add to a list for further analysis
 
-            handledata = HandleData(retweets=retweets, handle=handle)#add to database
+            handledata = HandleData(retweets=retweets, handle=handle.id, timestamp = DT.datetime.now())#add to database
             db.session.add(handledata)
             db.session.commit()
             total_retweets += r[-1]#get the most recently added tweet
+            print handle.name, retweets
 
         average_retweets = total_retweets / float(len(handles))
 
         i = 0
         while i<len(handles):
-            cost = (r[i]/average_retweets) * 100) / 5
+            cost = ((r[i]/average_retweets) * 100) / 5
             person = Handle.query.filter_by(name=handles[i])
-            person.update().values(cost=cost)
+            person.cost = cost
             db.session.commit()
             i+=1
-
-        sleep(time)
 
     return True
     
 if __name__=="__main__":
-    pass
+    write_to_db()
     #last_week = DT.datetime.today() - DT.timedelta(days=1)
     #print getRetweets("realDonaldTrump", last_week, 7)
