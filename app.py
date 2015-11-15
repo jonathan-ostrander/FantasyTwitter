@@ -31,6 +31,9 @@ class Team(db.Model):
     def __repr__(self):
         return '<Team %r>' % (self.user)
         
+    def get_points(self):
+        return sum([handle.get_latest() for handle in self.handles])
+        
 class Handle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140))
@@ -38,7 +41,10 @@ class Handle(db.Model):
     datapoints = db.relationship('HandleData', backref='handle_author', lazy='dynamic')
 
     def __repr__(self):
-        return '<Handle %r>' % (self.name)  
+        return '<Handle %r>' % (self.name)
+        
+    def get_latest(self):
+        return sorted(self.datapoints, key=lambda x: x.timestamp)[-1].retweets
 
 class HandleData(db.Model):
     id = db.Column(db.Integer, primary_key = True)
