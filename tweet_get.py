@@ -1,5 +1,6 @@
 import tweepy
 import datetime as DT
+from time import sleep
 
 from app import db, Handle, HandleData
 
@@ -22,29 +23,32 @@ def getRetweets(name):
    	#loop through each tweet and add to sum
     return retweet_sum
 
-def write_to_db():
-    handles = Handle.query.all()
+def write_to_db(time):
+    while True:
+        handles = Handle.query.all()
 
-    total_retweets = 0
-    r = []
-    for handle in handles:
-        retweets = getReweets(handle.name)#get the retweets
-        r.append(retweets)#add to a list for further analysis
+        total_retweets = 0
+        r = []
+        for handle in handles:
+            retweets = getReweets(handle.name)#get the retweets
+            r.append(retweets)#add to a list for further analysis
 
-        handledata = HandleData(retweets=retweets, handle=handle)#add to database
-        db.session.add(handledata)
-        db.session.commit()
-        total_retweets += r[-1]#get the most recently added tweet
+            handledata = HandleData(retweets=retweets, handle=handle)#add to database
+            db.session.add(handledata)
+            db.session.commit()
+            total_retweets += r[-1]#get the most recently added tweet
 
-    average_retweets = total_retweets / float(len(handles))
+        average_retweets = total_retweets / float(len(handles))
 
-    i = 0
-    while i<len(handles):
-        cost = (r[i]/average_retweets) * 100) / 5
-        person = Handle.query.filter_by(name=handles[i])
-        person.update().values(cost=cost)
-        db.session.commit()
-        i+=1
+        i = 0
+        while i<len(handles):
+            cost = (r[i]/average_retweets) * 100) / 5
+            person = Handle.query.filter_by(name=handles[i])
+            person.update().values(cost=cost)
+            db.session.commit()
+            i+=1
+
+        sleep(time)
 
     return True
     
