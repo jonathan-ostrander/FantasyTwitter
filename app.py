@@ -52,7 +52,6 @@ class HandleData(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     handle = db.Column(db.Integer, db.ForeignKey('handle.id'))
     retweets = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime)
 
     def __repr__(self):
         return '<HandleData %r>' % (self.dataPt) 
@@ -69,53 +68,44 @@ def get_retweet_info(time, name, past, delta):
 	past_date = DT.datetime.today() - DT.timedelta(days=1)
 	return None
 
-def get_info_raw(name, past, delta):
-	'''
-	return json about the user from the name
-	'''
+def write_to_db():
+	handles = Handle.query.all()
 
-	last_week = DT.datetime.today() - DT.timedelta(days=past['days'],
-												   hours=past['hours'],
-												   minutes=past['minutes']
-													)
+	total_retweets = 0
+	r = []
+	for handle in handles:
+		retweets = getReweets(handle.name)#get the retweets
+		r.append(retweets)#add to a list for further analysis
 
-	return_dict = {
-		'name': name,
-		'retweets': tweet_get.getRetweets(name, last_week, delta),
-		'date_start':last_week,
-		'date_end':last_week + DT.timedelta(days=delta['days'],
-										   hours=delta['hours'],
-										   minutes=delta['minutes']
-											)
-	}
+		handledata = HandleData(retweets=retweets, handle=handle)#add to database
+		db.session.add(handledata)
+		db.session.commit()
+		total_retweets += r[-1]#get the most recently added tweet
 
-	return return_dict
+	average_retweets = total_retweets / float(len(handles))
 
-def write_to_db(time, x):
-	past = {
-		'days':1,
-		'hours':0,
-		'minutes':0
-	}
+	i = 0
+	while i<len(handles):
+		cost = (r[i]/average_retweets) * 100) / 5
+		person = Handle.query.filter_by(name=handles[i])
+		person.update().values(cost=cost)
+		db.session.commit()
+		i+=1
 
-	delta = {
-		'days':0,
-		'hours':23,
-		'minutes':0
-	}
-	with open("./top100.json") as twit_users:
-		json_data = json.load(twit_users)
-		while True:
-			for user in json_data:
-				data = get_info_raw(user[1:], past, delta)
-				print data['name'], data['retweets']
-			sleep(time)         
+	return True
+	
+
+
+
+@app.route('/')
+def home():
+	return render_template('index.html')
 
 
 if __name__ == "__main__":
 	_pool = Pool(processes=1)
 	try:
-		p = multiprocessing.Process(target=write_to_db, args=(1,10))
+		p = multiprocessing.Process(target=write_to_db, args=())
 		p.start()
 		app.run(debug=True)
 	except KeyboardInterrupt:
