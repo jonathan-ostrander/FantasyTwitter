@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, jsonify
+from flask import Flask, render_template, redirect, request, url_for, jsonify, g
 from flask.ext.sqlalchemy import SQLAlchemy
 
 import datetime as DT
@@ -78,6 +78,46 @@ def signup():
 
 @app.route('/leaderboard')
 def leaderboard():
+    users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
+    render_template('leaderboard.html', users=users)
+    
+@app.route('/team')
+def team():
+    if g.user is None:
+        redirect(url_for('home'))
+    
+    if len(g.user.teams) == 0:
+        handles = Handle.query.all()
+        team = None
+    else:
+        team = g.user.teams[0]
+        handles = None
+        
+    render_template('team.html', handles = handles, team = team)
+
+@app.route('/createteam', methods=["POST"])
+def create_team():
+
+    if g.user.teams > 0:
+        redirect(url_for('team'))
+    
+    handles=[]
+    for checkbox in request.form.getlist('check'):
+        handles.append(Handle.query.filter_by(name = checkbox.value).first())
+    
+    if sum([handle.cost for handle in handles]) <= 100:
+        team = Team(user = g.user.id, handles = handles)
+
+        db.session.add(team)
+        db.session.commit()
+    
+        render_template('team.html', handles = handles, team = team)
+    
+    else:
+        redirect(url_for('team'))
+    
+@app.route('/RTData')
+def RTData():
     users = sorted([user for user in User.query.all() if len(user.teams) > 0], key=lambda user: user.teams[0].get_points())
     render_template('leaderboard.html', users=users)
     

@@ -43,7 +43,7 @@ def write_to_db():
     i = 0
     while i<len(handles):
         cost = ((r[i]/average_retweets) * 100) / 5
-        person = Handle.query.filter_by(name=handles[i])
+        person = Handle.query.filter_by(name=handles[i]).first()
         person.cost = cost
         db.session.commit()
         i+=1
