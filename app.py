@@ -24,7 +24,7 @@ handles = db.Table('handles',
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
-    password = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(64), index=True)
     teams = db.relationship('Team', backref='author', lazy='dynamic')
 
     def __repr__(self):
@@ -57,6 +57,28 @@ class HandleData(db.Model):
     def __repr__(self):
         return '<HandleData %r>' % (self.dataPt) 
 
+@app.route('/login',methods=["POST"])
+def login():
+    user = User.query.filter_by(username = request.args.get("username")).first()
+    if user is None or request.args.get("password") != user.password:
+        return redirect(url_for("home"))
+    else:
+        g.user = user
+        return redirect(url_for("front_panel"))
+        
+@app.route('/signup',methods=["POST"])
+def signup():
+    user = User.query.filter_by(username = request.args.get("username")).first()
+    if user is None:
+        user = User(username = request.args.get("username"), password = request.args.get("password"))
+        db.session.add(user)
+        db.session.commit()
+        g.user = user
+        return redirect(url_for("front_panel"))
+    else:
+        return redirect(url_for("home"))
+        
+        
 #update database and stuff
 def get_retweet_info(time, name, past, delta):
 	'''
@@ -73,7 +95,6 @@ def get_info_raw(name, past, delta):
 	'''
 	return json about the user from the name
 	'''
-
 	last_week = DT.datetime.today() - DT.timedelta(days=past['days'],
 												   hours=past['hours'],
 												   minutes=past['minutes']
