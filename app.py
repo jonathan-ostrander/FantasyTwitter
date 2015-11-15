@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 
-import tweet_get
+import tweet_get import * 
 import datetime as DT
 from time import sleep
 from multiprocessing import Pool
